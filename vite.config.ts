@@ -8,7 +8,6 @@ export default defineConfig({
     VitePWA({
       registerType: "prompt",
       includeAssets: ["favicon.ico", "apple-touch-icon.png", "mask-icon.svg"],
-
       manifest: {
         name: "Plinko casino",
         display: "standalone",
