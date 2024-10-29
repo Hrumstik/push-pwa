@@ -8,9 +8,7 @@ export default defineConfig({
     VitePWA({
       registerType: "prompt",
       includeAssets: ["favicon.ico", "apple-touch-icon.png", "mask-icon.svg"],
-      strategies: "injectManifest",
-      srcDir: "public",
-      filename: "OneSignalSDKWorker.js",
+
       manifest: {
         name: "Plinko casino",
         display: "standalone",

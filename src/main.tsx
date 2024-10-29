@@ -6,13 +6,6 @@ import { Provider } from "react-redux";
 import { MixpanelProvider } from "react-mixpanel-browser";
 import "normalize.css";
 import LocaleProvider from "./LocaleProvider.tsx";
-import { requestPermissionForOneSignal } from "./pushNotificationService.ts";
-
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    requestPermissionForOneSignal();
-  });
-}
 
 const MIXPANEL_TOKEN = "17065ccd70b890e3585fc6a46505aff7";
 
