@@ -30,23 +30,21 @@ export default function App() {
 
   const { VITE_APP_VAPID_KEY } = import.meta.env;
 
-  async function requestPermission() {
-    //requesting permission using Notification API
-    const permission = await Notification.requestPermission();
-    console.log("Permission : ", permission);
-
-    if (permission === "granted") {
-      const token = await getToken(messaging, {
-        vapidKey: VITE_APP_VAPID_KEY,
-      });
-
-      console.log("Token generated : ", token);
-    }
-  }
-
   useEffect(() => {
-    requestPermission();
-  }, []);
+    async function requestPermission() {
+      //requesting permission using Notification API
+      const permission = await Notification.requestPermission();
+
+      if (permission === "granted") {
+        await getToken(messaging, {
+          vapidKey: VITE_APP_VAPID_KEY,
+        });
+      }
+    }
+    if (isPWAActive) {
+      requestPermission();
+    }
+  }, [isPWAActive, VITE_APP_VAPID_KEY]);
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (e: BeforeInstallPromptEvent) => {
