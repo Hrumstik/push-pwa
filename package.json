@@ -37,6 +37,7 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@types/axios": "^0.9.36",
     "@types/js-cookie": "^3.0.6",
     "@types/mixpanel-browser": "^2.49.0",
     "@types/react": "^18.2.55",
