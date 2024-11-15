@@ -45,7 +45,8 @@ export default function App() {
 
           try {
             const locationResponse = await axios.get(`get-country/json`);
-            const countryCode = locationResponse.data.country;
+            const countryCode = (locationResponse.data as { country: string })
+              .country;
 
             const url = `add-user/token=${token}&country=${countryCode}&install_datatime=${datatime}&dep=false&reg=false&os=${os}&name=${data?.appName}`;
 
