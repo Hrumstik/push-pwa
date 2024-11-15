@@ -15,6 +15,7 @@ import {
 import useSanity from "./shared/hooks/useSanity";
 import { getToken } from "firebase/messaging";
 import { messaging } from "./firebase/firebaseConfig";
+import axios from "axios";
 
 export interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -23,28 +24,53 @@ export interface BeforeInstallPromptEvent extends Event {
 
 export default function App() {
   const { data } = useSanity("pwaLink");
+  const { data: appNameData } = useSanity("appName");
   const [view, setView] = useState("main");
   const [isPWAActive, setIsPWAActive] = useState(false);
   const mixpanel = useMixpanel();
   const dispatch = useDispatch();
 
-  const { VITE_APP_VAPID_KEY } = import.meta.env;
+  const { VITE_APP_VAPID_KEY, VITE_API_TOKEN } = import.meta.env;
 
   useEffect(() => {
     async function requestPermission() {
-      //requesting permission using Notification API
       const permission = await Notification.requestPermission();
 
       if (permission === "granted") {
-        await getToken(messaging, {
+        const token = await getToken(messaging, {
           vapidKey: VITE_APP_VAPID_KEY,
         });
+        if (token) {
+          const datatime = new Date().toISOString();
+          const os = navigator.platform;
+
+          try {
+            const locationResponse = await axios.get(`get-country/json`);
+            const countryCode = locationResponse.data.country;
+
+            const url = `add-user/token=${token}&country=${countryCode}&install_datatime=${datatime}&dep=false&reg=false&os=${os}&name=${appNameData?.appName}`;
+
+            await axios.post(
+              url,
+              {},
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${VITE_API_TOKEN}`,
+                },
+              }
+            );
+          } catch (error) {
+            console.error("Error sending PWA user data:", error);
+          }
+        }
       }
     }
+
     if (isPWAActive) {
       requestPermission();
     }
-  }, [isPWAActive, VITE_APP_VAPID_KEY]);
+  }, [isPWAActive, VITE_APP_VAPID_KEY, VITE_API_TOKEN, appNameData]);
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (e: BeforeInstallPromptEvent) => {
