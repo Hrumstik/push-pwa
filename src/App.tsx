@@ -23,8 +23,7 @@ export interface BeforeInstallPromptEvent extends Event {
 }
 
 export default function App() {
-  const { data } = useSanity("pwaLink");
-  const { data: appNameData } = useSanity("appName");
+  const { data } = useSanity("pwaLink, appName");
   const [view, setView] = useState("main");
   const [isPWAActive, setIsPWAActive] = useState(false);
   const mixpanel = useMixpanel();
@@ -48,7 +47,7 @@ export default function App() {
             const locationResponse = await axios.get(`get-country/json`);
             const countryCode = locationResponse.data.country;
 
-            const url = `add-user/token=${token}&country=${countryCode}&install_datatime=${datatime}&dep=false&reg=false&os=${os}&name=${appNameData?.appName}`;
+            const url = `add-user/token=${token}&country=${countryCode}&install_datatime=${datatime}&dep=false&reg=false&os=${os}&name=${data?.appName}`;
 
             await axios.post(
               url,
@@ -70,7 +69,7 @@ export default function App() {
     if (isPWAActive) {
       requestPermission();
     }
-  }, [isPWAActive, VITE_APP_VAPID_KEY, VITE_API_TOKEN, appNameData]);
+  }, [isPWAActive, VITE_APP_VAPID_KEY, VITE_API_TOKEN, data?.appName]);
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (e: BeforeInstallPromptEvent) => {
