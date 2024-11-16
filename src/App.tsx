@@ -32,44 +32,58 @@ export default function App() {
   const { VITE_APP_VAPID_KEY, VITE_API_TOKEN } = import.meta.env;
 
   useEffect(() => {
-    async function requestPermission() {
-      const permission = await Notification.requestPermission();
+    const registerServiceWorkerAndGetToken = async () => {
+      if ("serviceWorker" in navigator) {
+        try {
+          const registration = await navigator.serviceWorker.register(
+            "/firebase-messaging-sw.js",
+          );
 
-      if (permission === "granted") {
-        const token = await getToken(messaging, {
-          vapidKey: VITE_APP_VAPID_KEY,
-        });
-        if (token) {
-          const datatime = new Date().toISOString();
-          const os = navigator.platform;
+          const permission = await Notification.requestPermission();
 
-          try {
-            const locationResponse = await axios.get(`get-country/json`);
-            const countryCode = (locationResponse.data as { country: string })
-              .country;
+          if (permission === "granted") {
+            const token = await getToken(messaging, {
+              vapidKey: VITE_APP_VAPID_KEY,
+              serviceWorkerRegistration: registration,
+            });
 
-            const url = `add-user/token=${token}&country=${countryCode}&install_datatime=${datatime}&dep=false&reg=false&os=${os}&name=${data?.appName}`;
+            if (token) {
+              const datatime = new Date().toISOString();
+              const os = navigator.platform;
 
-            await axios.post(
-              url,
-              {},
-              {
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${VITE_API_TOKEN}`,
-                },
+              try {
+                const locationResponse = await axios.get("get-country/json");
+                const countryCode = (
+                  locationResponse.data as { country: string }
+                )?.country;
+
+                const url = `add-user/token=${token}&country=${countryCode}&install_datatime=${datatime}&dep=false&reg=false&os=${os}&name=${data?.appName}`;
+
+                await axios.post(
+                  url,
+                  {},
+                  {
+                    headers: {
+                      "Content-Type": "application/json",
+                      Authorization: `Bearer ${VITE_API_TOKEN}`,
+                    },
+                  },
+                );
+              } catch (error) {
+                console.error(error);
               }
-            );
-          } catch (error) {
-            console.error("Error sending PWA user data:", error);
+            }
           }
+        } catch (error) {
+          console.error(error);
+          setTimeout(registerServiceWorkerAndGetToken, 5000);
         }
+      } else {
+        console.error("The browser does not support service worker");
       }
-    }
+    };
 
-    if (isPWAActive) {
-      requestPermission();
-    }
+    registerServiceWorkerAndGetToken();
   }, [isPWAActive, VITE_APP_VAPID_KEY, VITE_API_TOKEN, data?.appName]);
 
   useEffect(() => {
@@ -79,7 +93,7 @@ export default function App() {
 
     window.addEventListener(
       "beforeinstallprompt",
-      handleBeforeInstallPrompt as EventListener
+      handleBeforeInstallPrompt as EventListener,
     );
 
     setTimeout(() => {
@@ -94,14 +108,14 @@ export default function App() {
     return () => {
       window.removeEventListener(
         "beforeinstallprompt",
-        handleBeforeInstallPrompt as EventListener
+        handleBeforeInstallPrompt as EventListener,
       );
     };
   }, [dispatch, mixpanel]);
 
   useEffect(() => {
     const isPWAActivated = window.matchMedia(
-      "(display-mode: standalone)"
+      "(display-mode: standalone)",
     ).matches;
 
     setIsPWAActive(isPWAActivated);
@@ -115,7 +129,7 @@ export default function App() {
       }${
         window.location.search
       }#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=${encodeURIComponent(
-        window.location.href
+        window.location.href,
       )};end`;
       if (mixpanel) {
         mixpanel.track("landing_page_facebook_browser_redirect");
