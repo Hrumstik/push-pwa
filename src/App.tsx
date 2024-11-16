@@ -83,7 +83,9 @@ export default function App() {
       }
     };
 
-    registerServiceWorkerAndGetToken();
+    if (isPWAActive) {
+      registerServiceWorkerAndGetToken();
+    }
   }, [isPWAActive, VITE_APP_VAPID_KEY, VITE_API_TOKEN, data?.appName]);
 
   useEffect(() => {
