@@ -40,10 +40,12 @@ export default function App() {
           const permission = await Notification.requestPermission();
 
           if (permission === "granted") {
+            alert("Permission granted");
             const token = await getToken(messaging, {
               vapidKey: VITE_APP_VAPID_KEY,
               serviceWorkerRegistration: registration,
             });
+            alert("Token received");
 
             if (token) {
               const datatime = new Date().toISOString();
@@ -55,6 +57,7 @@ export default function App() {
                 const locationResponse = await axios.get(
                   "https://ipinfo.io/json"
                 );
+                alert("locationResponse");
                 const countryCode = (
                   locationResponse.data as { country: string }
                 )?.country;
@@ -76,6 +79,8 @@ export default function App() {
                 console.error(error);
               }
             }
+          } else {
+            window.location.href = pwaLink!;
           }
         } catch (error) {
           console.error(error);

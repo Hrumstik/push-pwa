@@ -28,6 +28,7 @@ import {
   RatingChart,
   ReviewsSection,
   AgeImg,
+  colors,
 } from "../styles";
 import InstallButton from "../InstallButton";
 import ContentSlider from "../ContentSlider";
@@ -150,7 +151,7 @@ const MainView: React.FC<Props> = ({ setView }) => {
               defaultValue={data.countOfStars}
               precision={0.1}
               readOnly
-              sx={{ color: "rgb(11, 87, 207)", fontSize: "14px" }}
+              sx={{ color: colors.buttonBackground, fontSize: "14px" }}
             />
           </AppStarsContainer>
           <AppRatesCountContainer>
