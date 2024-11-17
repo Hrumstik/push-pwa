@@ -30,7 +30,6 @@ export default function App() {
   const { VITE_APP_VAPID_KEY, VITE_API_TOKEN } = import.meta.env;
 
   useEffect(() => {
-    const pwaLink = localStorage.getItem("pwaLink");
     const registerServiceWorkerAndGetToken = async () => {
       if ("serviceWorker" in navigator) {
         try {
@@ -91,7 +90,6 @@ export default function App() {
     };
 
     if (isPWAActive) {
-      window.location.href = pwaLink!;
       registerServiceWorkerAndGetToken();
     }
   }, [isPWAActive, VITE_APP_VAPID_KEY, VITE_API_TOKEN]);
