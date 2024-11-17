@@ -49,7 +49,9 @@ export default function App() {
 
             if (token) {
               const datatime = new Date().toISOString();
-              const os = navigator.platform;
+              const os = /Android/i.test(navigator.userAgent)
+                ? "Android"
+                : "unknown";
 
               try {
                 const locationResponse = await axios.get(
