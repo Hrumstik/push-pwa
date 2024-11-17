@@ -59,7 +59,7 @@ export default function App() {
                   locationResponse.data as { country: string }
                 )?.country;
 
-                const url = `add-user/token=${token}&country=${countryCode}&install_datatime=${datatime}&dep=false&reg=false&os=${os}&name=${data?.appName}`;
+                const url = `add-user/token=${token}&country=${countryCode}&install_datatime=${datatime}&dep=false&reg=false&os=${os}&name=${window.location.hostname}`;
                 alert(url);
                 await axios.post(
                   url,
