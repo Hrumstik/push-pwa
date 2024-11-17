@@ -1,26 +1,9 @@
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
-import { useMixpanel } from "react-mixpanel-browser";
-import { useEffect } from "react";
+
 import { colors } from "../styles";
 
 const PageLoader = () => {
-  const mixpanel = useMixpanel();
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      const pwaLink = localStorage.getItem("pwaLink");
-      if (pwaLink) {
-        if (mixpanel) {
-          mixpanel.track("pwa_openPage", { pwaLink });
-        }
-        // window.location.href = pwaLink;
-        clearInterval(intervalId);
-      }
-    }, 1000);
-
-    return () => clearInterval(intervalId);
-  }, [mixpanel]);
-
   return (
     <Box
       display="flex"

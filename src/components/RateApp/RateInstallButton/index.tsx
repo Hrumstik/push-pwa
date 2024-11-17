@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../Redux/store/store";
-import { useMixpanel } from "react-mixpanel-browser";
 import { useIntl } from "react-intl";
 import {
   install,
@@ -26,25 +25,15 @@ const RateInstallButton: React.FC<Props> = ({ appLink }) => {
     (state: RootState) => state.install.isDownloaded
   );
 
-  const mixpanel = useMixpanel();
   const dispatch = useDispatch();
   const intl = useIntl();
 
-  const trackEvent = (eventName: string) => {
-    if (mixpanel) {
-      mixpanel.track(eventName);
-    }
-  };
-
   useEffect(() => {
     const handleAppInstalled = () => {
-      if (mixpanel) {
-        mixpanel.track("landing_callback_pwa_installed");
-        setTimeout(() => {
-          setIsInstalled(true);
-          dispatch(stopInstalling());
-        }, 10000);
-      }
+      setTimeout(() => {
+        setIsInstalled(true);
+        dispatch(stopInstalling());
+      }, 10000);
     };
 
     window.addEventListener("appinstalled", handleAppInstalled);
@@ -52,11 +41,10 @@ const RateInstallButton: React.FC<Props> = ({ appLink }) => {
     return () => {
       window.removeEventListener("appinstalled", handleAppInstalled);
     };
-  }, [dispatch, mixpanel]);
+  }, [dispatch]);
 
   const installPWA = async () => {
     if (installPrompt) {
-      trackEvent("landing_btn_install_pressed");
       dispatch(install());
       await installPrompt.prompt();
       const choiceResult = await installPrompt.userChoice;
@@ -70,7 +58,6 @@ const RateInstallButton: React.FC<Props> = ({ appLink }) => {
   };
 
   const openLink = () => {
-    trackEvent("landing_btn_open_pressed");
     window.open(appLink, "_blank");
   };
 

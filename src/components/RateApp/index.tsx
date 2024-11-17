@@ -15,15 +15,12 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import { Button, Grid } from "@mui/material";
 import RateInstallButton from "./RateInstallButton";
-import { useMixpanel } from "react-mixpanel-browser";
 
 const RateApp = () => {
   const intl = useIntl();
-  const mixpanel = useMixpanel();
   const [modal, setModal] = useState(false);
 
   const handleOpen = () => {
-    mixpanel?.track("landing_btn_rating_pressed");
     setModal(true);
   };
 

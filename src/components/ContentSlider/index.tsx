@@ -1,24 +1,13 @@
 import Slider from "react-slick";
-import { useMixpanel } from "react-mixpanel-browser";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { ScreenContainer, ScreenWrapperItem, SliderContainer } from "../styles";
 import useSanity from "../../shared/hooks/useSanity";
 
 export default function ContentSlider() {
-  const mixpanel = useMixpanel();
-
   const { data, urlFor } = useSanity("screens");
 
   if (!data) return null;
-
-  const handleScreenshotClick = (screenName: string) => {
-    if (mixpanel) {
-      mixpanel.track("landing_screenshots_tapped", {
-        "Screen Name": screenName,
-      });
-    }
-  };
 
   const settings = {
     dots: false,
@@ -51,10 +40,7 @@ export default function ContentSlider() {
         <Slider {...settings}>
           {data?.screens.map((screen, index) => {
             return (
-              <ScreenWrapperItem
-                key={index}
-                onClick={() => handleScreenshotClick(`${index}`)}
-              >
+              <ScreenWrapperItem key={index}>
                 <ScreenContainer>
                   <img
                     src={urlFor(screen)}

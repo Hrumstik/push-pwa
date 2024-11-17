@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import styled from "@emotion/styled";
-import { useMixpanel } from "react-mixpanel-browser";
 import { useSelector, useDispatch } from "react-redux";
 import {
   install,
@@ -11,7 +10,7 @@ import {
   stopInstalling,
 } from "../../Redux/feat/InstallSlice";
 import { Button } from "@mui/material";
-import { CustomButton, colors } from "../styles";
+import { colors } from "../styles";
 import { useIntl } from "react-intl";
 import { RootState } from "../../Redux/store/store";
 
@@ -33,14 +32,9 @@ const AnimatedButton = styled<any>(motion(Button), {
   background-color: ${(props) =>
     props.$isInstalling ? "grey" : colors.buttonBackground};
   color: ${(props) => (props.$isInstalling ? colors.disabledText : "white")};
-  &:hover {
-    background-color: ${(props) =>
-      props.$isInstalling ? colors.background : colors.primary};
-    box-shadow: none;
-  }
   &:active {
     background-color: ${(props) =>
-      props.$isInstalling ? colors.background : colors.primary};
+      props.$isInstalling ? colors.background : colors.buttonBackground};
   }
 `;
 
@@ -59,25 +53,15 @@ const InstallButton: React.FC<Props> = ({ appLink }) => {
     (state: RootState) => state.install.fakeDownload
   );
 
-  const mixpanel = useMixpanel();
   const dispatch = useDispatch();
   const intl = useIntl();
 
-  const trackEvent = (eventName: string) => {
-    if (mixpanel) {
-      mixpanel.track(eventName);
-    }
-  };
-
   useEffect(() => {
     const handleAppInstalled = () => {
-      if (mixpanel) {
-        mixpanel.track("landing_callback_pwa_installed");
-        setTimeout(() => {
-          setIsInstalled(true);
-          dispatch(stopInstalling());
-        }, 10000);
-      }
+      setTimeout(() => {
+        setIsInstalled(true);
+        dispatch(stopInstalling());
+      }, 10000);
     };
 
     window.addEventListener("appinstalled", handleAppInstalled);
@@ -85,18 +69,14 @@ const InstallButton: React.FC<Props> = ({ appLink }) => {
     return () => {
       window.removeEventListener("appinstalled", handleAppInstalled);
     };
-  }, [dispatch, mixpanel]);
+  }, [dispatch]);
 
   const downloadPWA = () => {
-    if (mixpanel) {
-      mixpanel.track("landing_btn_download_pressed");
-    }
     dispatch(startFakeDownload());
   };
 
   const installPWA = async () => {
     if (installPrompt) {
-      trackEvent("landing_btn_install_pressed");
       dispatch(install());
       await installPrompt.prompt();
       const choiceResult = await installPrompt.userChoice;
@@ -112,15 +92,14 @@ const InstallButton: React.FC<Props> = ({ appLink }) => {
   };
 
   const openLink = () => {
-    trackEvent("landing_btn_open_pressed");
     window.open(appLink, "_blank");
   };
 
   if (isDownloaded && isInstalled) {
     return (
-      <CustomButton fullWidth onClick={openLink}>
+      <AnimatedButton fullWidth onClick={openLink}>
         {intl.formatMessage({ id: "open" })}
-      </CustomButton>
+      </AnimatedButton>
     );
   }
 

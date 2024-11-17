@@ -121,7 +121,6 @@ const MainView: React.FC<Props> = ({ setView }) => {
         <ContentSlider />
         <AboutGameContainer>
           <OpenSectionButton
-            mixPanelEvent="landing_btn_aboutApp_pressed"
             id="about"
             defaultMessage="About this game"
             view="about"
@@ -134,7 +133,6 @@ const MainView: React.FC<Props> = ({ setView }) => {
         <ChipSlider />
         <AboutGameContainer>
           <OpenSectionButton
-            mixPanelEvent="landing_btn_ratingsApp_pressed"
             id="ratingsAndReviews"
             defaultMessage="Ratings and reviews"
             view="reviews"

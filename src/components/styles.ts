@@ -160,7 +160,7 @@ export const AgeLogoContainer = styled.div`
 export const CustomButton = styled(Button)({
   // "@media (max-width: 480px)": {
   backgroundColor: colors.buttonBackground,
-  borderRadius: "20px",
+
   border: "none",
   color: "white",
   fontFamily: "system-ui",
@@ -228,7 +228,8 @@ export const ScreenWrapperItem = styled.div`
 
 export const ScreenContainer = styled.div`
   overflow: hidden;
-  box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3),
+  box-shadow:
+    0 1px 2px 0 rgba(60, 64, 67, 0.3),
     0 1px 3px 1px rgba(60, 64, 67, 0.15);
   border-radius: 8px;
   @media (max-width: 480px) {

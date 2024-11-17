@@ -1,6 +1,5 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { useIntl } from "react-intl";
-import { useMixpanel } from "react-mixpanel-browser";
 import { Button, Grid } from "@mui/material";
 import { ButtonTitle } from "../styles";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
@@ -10,23 +9,18 @@ interface Props {
   defaultMessage: string;
   view: string;
   setView: Dispatch<SetStateAction<string>>;
-  mixPanelEvent: string;
 }
 
 const OpenSectionButton: React.FC<Props> = ({
   id,
   view,
   setView,
-  mixPanelEvent,
+
   defaultMessage,
 }) => {
   const intl = useIntl();
-  const mixpanel = useMixpanel();
 
   const handleSetView = () => {
-    if (mixpanel) {
-      mixpanel.track(mixPanelEvent);
-    }
     setView(view);
   };
 

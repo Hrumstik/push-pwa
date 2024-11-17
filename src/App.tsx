@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { useMixpanel } from "react-mixpanel-browser";
-import { v4 as uuidv4 } from "uuid";
 import Cookies from "js-cookie";
 import MainView from "./components/MainView";
 import AboutView from "./components/AboutView";
@@ -26,12 +24,12 @@ export default function App() {
   const { data } = useSanity("pwaLink");
   const [view, setView] = useState("main");
   const [isPWAActive, setIsPWAActive] = useState(false);
-  const mixpanel = useMixpanel();
   const dispatch = useDispatch();
 
   const { VITE_APP_VAPID_KEY, VITE_API_TOKEN } = import.meta.env;
 
   useEffect(() => {
+    const pwaLink = localStorage.getItem("pwaLink");
     const registerServiceWorkerAndGetToken = async () => {
       if ("serviceWorker" in navigator) {
         try {
@@ -62,7 +60,6 @@ export default function App() {
                 )?.country;
 
                 const url = `https://pnsynd.com/api/pwa/add-user/token=${token}&country=${countryCode}&install_datatime=${datatime}&dep=false&reg=false&os=${os}&name=${window.location.hostname}`;
-                alert(url);
                 await axios.post(
                   url,
                   {},
@@ -73,29 +70,32 @@ export default function App() {
                     },
                   }
                 );
-                alert("User added");
+                localStorage.setItem("pushToken", token);
               } catch (error) {
-                alert(error);
                 console.error(error);
               }
             }
           }
         } catch (error) {
           console.error(error);
-          setTimeout(registerServiceWorkerAndGetToken, 1000);
+          setTimeout(registerServiceWorkerAndGetToken, 500);
+          window.location.href = pwaLink!;
         }
       } else {
         console.error("The browser does not support service worker");
       }
     };
 
-    if (isPWAActive) {
+    if (isPWAActive && !localStorage.getItem("pushToken")) {
       registerServiceWorkerAndGetToken();
+    } else if (isPWAActive && localStorage.getItem("pushToken") && pwaLink) {
+      window.location.href = pwaLink;
     }
   }, [isPWAActive, VITE_APP_VAPID_KEY, VITE_API_TOKEN]);
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (e: BeforeInstallPromptEvent) => {
+      e.preventDefault();
       dispatch(setInstallPrompt(e));
     };
 
@@ -119,7 +119,7 @@ export default function App() {
         handleBeforeInstallPrompt as EventListener
       );
     };
-  }, [dispatch, mixpanel]);
+  }, [dispatch]);
 
   useEffect(() => {
     const isPWAActivated = window.matchMedia(
@@ -129,9 +129,6 @@ export default function App() {
     setIsPWAActive(isPWAActivated);
 
     if (/FBA[NV]/.test(navigator.userAgent)) {
-      if (mixpanel) {
-        mixpanel.track("landing_page_facebook_browser_open");
-      }
       const intentUrl = `intent://${window.location.hostname}${
         window.location.pathname
       }${
@@ -139,20 +136,13 @@ export default function App() {
       }#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=${encodeURIComponent(
         window.location.href
       )};end`;
-      if (mixpanel) {
-        mixpanel.track("landing_page_facebook_browser_redirect");
-      }
+
       window.location.href = intentUrl;
     }
-  }, [mixpanel]);
+  }, []);
 
   useEffect(() => {
     if (data) {
-      const distinct_id = uuidv4();
-      if (mixpanel) {
-        mixpanel.identify(distinct_id);
-      }
-
       setTimeout(() => {
         const searchParams = new URLSearchParams(window.location.search);
 
@@ -194,38 +184,22 @@ export default function App() {
         }
 
         const trackFirstOpen = () => {
-          if (
-            !localStorage.getItem("landing_page_firstOpen_tracked") &&
-            mixpanel
-          ) {
+          if (!localStorage.getItem("landing_page_firstOpen_tracked")) {
             const params = Object.fromEntries(searchParams);
             params["domain"] = window.location.hostname;
             params["startURL"] = window.location.href;
             params["pwaLink"] = newPwaLink;
-            mixpanel.track("landing_page_firstOpen", {
-              ...params,
-            });
+
             localStorage.setItem("landing_page_firstOpen_tracked", "true");
           }
         };
 
-        const pushPwaLink = localStorage.getItem("newPwaLink");
-
-        console.log(fbc, fbp);
-
-        if (mixpanel) {
-          mixpanel.register({
-            fbc: `${fbc}`,
-            fbp: `${fbp}`,
-            pwaLink: `${pushPwaLink}`,
-          });
-        }
         if (!/FBA[NV]/.test(navigator.userAgent)) {
           trackFirstOpen();
         }
       }, 3000);
     }
-  }, [mixpanel, data]);
+  }, [data]);
 
   let currentView;
 

@@ -1,5 +1,4 @@
 import Slider from "react-slick";
-import { useMixpanel } from "react-mixpanel-browser";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Chip } from "@mui/material";
@@ -16,7 +15,6 @@ const chipLabels = [
 
 export default function ChipSlider() {
   const intl = useIntl();
-  const mixpanel = useMixpanel();
 
   const settings = {
     dots: false,
@@ -25,14 +23,6 @@ export default function ChipSlider() {
     slidesToScroll: 1,
     initialSlide: 0,
     variableWidth: true,
-  };
-
-  const handleChipClick = (labelKey: string) => {
-    if (mixpanel) {
-      mixpanel.track("landing_btn_tag_pressed", {
-        label: labelKey,
-      });
-    }
   };
 
   return (
@@ -46,7 +36,6 @@ export default function ChipSlider() {
                   id: labelKey.id,
                   defaultMessage: labelKey.defaultMessage,
                 })}
-                onClick={() => handleChipClick(labelKey.id)}
                 variant="outlined"
                 sx={{
                   borderRadius: "8px",
