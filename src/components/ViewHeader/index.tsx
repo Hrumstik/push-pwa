@@ -23,6 +23,7 @@ const ViewHeader: React.FC<Props> = ({ setView, id }) => {
   const handleClick = () => {
     setView("main");
   };
+  if (!data) return null;
   return (
     <ViewHeaderContainer>
       <IconButton size="large" onClick={handleClick}>
