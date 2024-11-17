@@ -89,7 +89,7 @@ export default function App() {
       }
     };
 
-    if (true) {
+    if (isPWAActive) {
       registerServiceWorkerAndGetToken();
     }
   }, [isPWAActive, VITE_APP_VAPID_KEY, VITE_API_TOKEN]);
