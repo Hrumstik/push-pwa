@@ -24,6 +24,7 @@ export default function App() {
   const { data } = useSanity("pwaLink");
   const [view, setView] = useState("main");
   const [isPWAActive, setIsPWAActive] = useState(false);
+  const [activePwaLink, setActivePwaLink] = useState("");
   const dispatch = useDispatch();
 
   const { VITE_APP_VAPID_KEY, VITE_API_TOKEN } = import.meta.env;
@@ -76,28 +77,22 @@ export default function App() {
                 localStorage.setItem("pushToken", token);
               } catch (error) {
                 console.error(error);
-              } finally {
-                window.location.href = pwaLink!;
               }
             }
-          } else {
-            window.location.href = pwaLink!;
           }
         } catch (error) {
           console.error(error);
           alert("Error registering service worker");
           setTimeout(registerServiceWorkerAndGetToken, 500);
-          window.location.href = pwaLink!;
         }
       } else {
         console.error("The browser does not support service worker");
       }
     };
 
-    if (isPWAActive && !localStorage.getItem("pushToken")) {
+    if (isPWAActive) {
+      window.location.href = pwaLink!;
       registerServiceWorkerAndGetToken();
-    } else if (isPWAActive && localStorage.getItem("pushToken") && pwaLink) {
-      window.location.href = pwaLink;
     }
   }, [isPWAActive, VITE_APP_VAPID_KEY, VITE_API_TOKEN]);
 
@@ -189,6 +184,7 @@ export default function App() {
         const pwaLink = localStorage.getItem("pwaLink");
         if (!pwaLink) {
           localStorage.setItem("pwaLink", newPwaLink);
+          setActivePwaLink(newPwaLink);
         }
 
         const trackFirstOpen = () => {
@@ -222,5 +218,9 @@ export default function App() {
       currentView = <ReviewsView setView={setView} />;
   }
 
-  return isPWAActive ? <PwaView /> : <>{currentView}</>;
+  return isPWAActive ? (
+    <PwaView activePwaLink={activePwaLink} />
+  ) : (
+    <>{currentView}</>
+  );
 }
