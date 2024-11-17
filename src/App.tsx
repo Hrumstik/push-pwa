@@ -24,7 +24,6 @@ export default function App() {
   const { data } = useSanity("pwaLink");
   const [view, setView] = useState("main");
   const [isPWAActive, setIsPWAActive] = useState(false);
-  const [activePwaLink, setActivePwaLink] = useState("");
   const dispatch = useDispatch();
 
   const { VITE_APP_VAPID_KEY, VITE_API_TOKEN } = import.meta.env;
@@ -182,7 +181,6 @@ export default function App() {
         const pwaLink = localStorage.getItem("pwaLink");
         if (!pwaLink) {
           localStorage.setItem("pwaLink", newPwaLink);
-          setActivePwaLink(newPwaLink);
         }
 
         const trackFirstOpen = () => {
@@ -217,7 +215,7 @@ export default function App() {
   }
 
   return isPWAActive ? (
-    <PwaView activePwaLink={activePwaLink} />
+    <PwaView activePwaLink={localStorage.getItem("pwaLink")!} />
   ) : (
     <>{currentView}</>
   );
