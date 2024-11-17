@@ -74,6 +74,7 @@ export default function App() {
                 );
                 localStorage.setItem("pushToken", token);
               } catch (error) {
+                alert(error);
                 console.error(error);
               }
             }
