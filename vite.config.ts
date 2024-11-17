@@ -45,12 +45,6 @@ export default defineConfig({
   ],
   server: {
     proxy: {
-      "/get-country": {
-        target: "https://ipinfo.io/",
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path.replace(/^\/get-country/, ""),
-      },
       "/add-user": {
         target: "https://pnsynd.com/api/pwa/add-user/",
         changeOrigin: true,

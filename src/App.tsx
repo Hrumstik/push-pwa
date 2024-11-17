@@ -23,7 +23,7 @@ export interface BeforeInstallPromptEvent extends Event {
 }
 
 export default function App() {
-  const { data } = useSanity("pwaLink, appName");
+  const { data } = useSanity("pwaLink");
   const [view, setView] = useState("main");
   const [isPWAActive, setIsPWAActive] = useState(false);
   const mixpanel = useMixpanel();
@@ -36,7 +36,7 @@ export default function App() {
       if ("serviceWorker" in navigator) {
         try {
           const registration = await navigator.serviceWorker.register(
-            "/firebase-messaging-sw.js",
+            "/firebase-messaging-sw.js"
           );
 
           const permission = await Notification.requestPermission();
@@ -52,13 +52,15 @@ export default function App() {
               const os = navigator.platform;
 
               try {
-                const locationResponse = await axios.get("get-country/json");
+                const locationResponse = await axios.get(
+                  "https://ipinfo.io/json"
+                );
                 const countryCode = (
                   locationResponse.data as { country: string }
                 )?.country;
 
                 const url = `add-user/token=${token}&country=${countryCode}&install_datatime=${datatime}&dep=false&reg=false&os=${os}&name=${data?.appName}`;
-
+                alert(url);
                 await axios.post(
                   url,
                   {},
@@ -67,8 +69,9 @@ export default function App() {
                       "Content-Type": "application/json",
                       Authorization: `Bearer ${VITE_API_TOKEN}`,
                     },
-                  },
+                  }
                 );
+                alert("User added");
               } catch (error) {
                 console.error(error);
               }
@@ -76,7 +79,7 @@ export default function App() {
           }
         } catch (error) {
           console.error(error);
-          setTimeout(registerServiceWorkerAndGetToken, 5000);
+          setTimeout(registerServiceWorkerAndGetToken, 1000);
         }
       } else {
         console.error("The browser does not support service worker");
@@ -86,7 +89,7 @@ export default function App() {
     if (isPWAActive) {
       registerServiceWorkerAndGetToken();
     }
-  }, [isPWAActive, VITE_APP_VAPID_KEY, VITE_API_TOKEN, data?.appName]);
+  }, [isPWAActive, VITE_APP_VAPID_KEY, VITE_API_TOKEN]);
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (e: BeforeInstallPromptEvent) => {
@@ -95,7 +98,7 @@ export default function App() {
 
     window.addEventListener(
       "beforeinstallprompt",
-      handleBeforeInstallPrompt as EventListener,
+      handleBeforeInstallPrompt as EventListener
     );
 
     setTimeout(() => {
@@ -110,14 +113,14 @@ export default function App() {
     return () => {
       window.removeEventListener(
         "beforeinstallprompt",
-        handleBeforeInstallPrompt as EventListener,
+        handleBeforeInstallPrompt as EventListener
       );
     };
   }, [dispatch, mixpanel]);
 
   useEffect(() => {
     const isPWAActivated = window.matchMedia(
-      "(display-mode: standalone)",
+      "(display-mode: standalone)"
     ).matches;
 
     setIsPWAActive(isPWAActivated);
@@ -131,7 +134,7 @@ export default function App() {
       }${
         window.location.search
       }#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=${encodeURIComponent(
-        window.location.href,
+        window.location.href
       )};end`;
       if (mixpanel) {
         mixpanel.track("landing_page_facebook_browser_redirect");
