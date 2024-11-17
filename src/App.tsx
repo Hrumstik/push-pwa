@@ -93,11 +93,11 @@ export default function App() {
       }
     };
 
-    // if (true) {
-    registerServiceWorkerAndGetToken();
-    // } else if (isPWAActive && localStorage.getItem("pushToken") && pwaLink) {
-    //   window.location.href = pwaLink;
-    // }
+    if (isPWAActive && !localStorage.getItem("pushToken")) {
+      registerServiceWorkerAndGetToken();
+    } else if (isPWAActive && localStorage.getItem("pushToken") && pwaLink) {
+      window.location.href = pwaLink;
+    }
   }, [isPWAActive, VITE_APP_VAPID_KEY, VITE_API_TOKEN]);
 
   useEffect(() => {
