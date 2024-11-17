@@ -160,7 +160,6 @@ export const AgeLogoContainer = styled.div`
 export const CustomButton = styled(Button)({
   // "@media (max-width: 480px)": {
   backgroundColor: colors.buttonBackground,
-
   border: "none",
   color: "white",
   fontFamily: "system-ui",
@@ -168,11 +167,11 @@ export const CustomButton = styled(Button)({
   textTransform: "none",
   boxShadow: "none",
   "&:hover": {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.buttonBackground,
     boxShadow: "none",
   },
   "&:active": {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.buttonBackground,
   },
   marginBottom: "24px",
   // },

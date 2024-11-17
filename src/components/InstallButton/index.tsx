@@ -10,7 +10,7 @@ import {
   stopInstalling,
 } from "../../Redux/feat/InstallSlice";
 import { Button } from "@mui/material";
-import { colors } from "../styles";
+import { CustomButton, colors } from "../styles";
 import { useIntl } from "react-intl";
 import { RootState } from "../../Redux/store/store";
 
@@ -32,6 +32,11 @@ const AnimatedButton = styled<any>(motion(Button), {
   background-color: ${(props) =>
     props.$isInstalling ? "grey" : colors.buttonBackground};
   color: ${(props) => (props.$isInstalling ? colors.disabledText : "white")};
+  &:hover {
+    background-color: ${(props) =>
+      props.$isInstalling ? colors.background : colors.buttonBackground};
+    box-shadow: none;
+  }
   &:active {
     background-color: ${(props) =>
       props.$isInstalling ? colors.background : colors.buttonBackground};
@@ -97,14 +102,9 @@ const InstallButton: React.FC<Props> = ({ appLink }) => {
 
   if (isDownloaded && isInstalled) {
     return (
-      <AnimatedButton
-        fullWidth
-        onClick={openLink}
-        $isInstalling={isDownloading}
-        disabled={isDownloading}
-      >
+      <CustomButton fullWidth onClick={openLink}>
         {intl.formatMessage({ id: "open" })}
-      </AnimatedButton>
+      </CustomButton>
     );
   }
 
