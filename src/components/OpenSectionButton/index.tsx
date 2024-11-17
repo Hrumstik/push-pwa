@@ -15,7 +15,6 @@ const OpenSectionButton: React.FC<Props> = ({
   id,
   view,
   setView,
-
   defaultMessage,
 }) => {
   const intl = useIntl();

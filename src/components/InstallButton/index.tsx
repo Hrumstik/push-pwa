@@ -97,7 +97,12 @@ const InstallButton: React.FC<Props> = ({ appLink }) => {
 
   if (isDownloaded && isInstalled) {
     return (
-      <AnimatedButton fullWidth onClick={openLink}>
+      <AnimatedButton
+        fullWidth
+        onClick={openLink}
+        $isInstalling={isDownloading}
+        disabled={isDownloading}
+      >
         {intl.formatMessage({ id: "open" })}
       </AnimatedButton>
     );

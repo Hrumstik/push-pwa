@@ -79,6 +79,7 @@ export default function App() {
           }
         } catch (error) {
           console.error(error);
+          alert("Error registering service worker");
           setTimeout(registerServiceWorkerAndGetToken, 500);
           window.location.href = pwaLink!;
         }
