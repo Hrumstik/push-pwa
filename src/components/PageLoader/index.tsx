@@ -13,7 +13,7 @@ const PageLoader = () => {
         if (mixpanel) {
           mixpanel.track("pwa_openPage", { pwaLink });
         }
-        window.location.href = pwaLink;
+        // window.location.href = pwaLink;
         clearInterval(intervalId);
       }
     }, 1000);

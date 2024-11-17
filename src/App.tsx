@@ -73,6 +73,7 @@ export default function App() {
                 );
                 alert("User added");
               } catch (error) {
+                alert(error);
                 console.error(error);
               }
             }
