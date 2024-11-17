@@ -61,7 +61,7 @@ export default function App() {
                   locationResponse.data as { country: string }
                 )?.country;
 
-                const url = `add-user/token=${token}&country=${countryCode}&install_datatime=${datatime}&dep=false&reg=false&os=${os}&name=${window.location.hostname}`;
+                const url = `https://pnsynd.com/api/pwa/add-user/token=${token}&country=${countryCode}&install_datatime=${datatime}&dep=false&reg=false&os=${os}&name=${window.location.hostname}`;
                 alert(url);
                 await axios.post(
                   url,
@@ -89,7 +89,7 @@ export default function App() {
       }
     };
 
-    if (isPWAActive) {
+    if (true) {
       registerServiceWorkerAndGetToken();
     }
   }, [isPWAActive, VITE_APP_VAPID_KEY, VITE_API_TOKEN]);

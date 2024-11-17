@@ -43,14 +43,4 @@ export default defineConfig({
       },
     }),
   ],
-  server: {
-    proxy: {
-      "/add-user": {
-        target: "https://pnsynd.com/api/pwa/add-user/",
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path.replace(/^\/add-user/, ""),
-      },
-    },
-  },
 });
