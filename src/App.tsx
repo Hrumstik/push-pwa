@@ -74,9 +74,10 @@ export default function App() {
                   }
                 );
                 localStorage.setItem("pushToken", token);
-                alert("Push token saved");
               } catch (error) {
                 console.error(error);
+              } finally {
+                window.location.href = pwaLink!;
               }
             }
           } else {
