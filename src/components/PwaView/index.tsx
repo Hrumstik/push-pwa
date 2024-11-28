@@ -19,7 +19,7 @@ const PwaView = ({
 
     const timer = setTimeout(() => {
       setView("button");
-    }, 15000);
+    }, 30000);
 
     return () => clearTimeout(timer);
   }, []);
