@@ -24,6 +24,7 @@ export default function App() {
   const { data } = useSanity("pwaLink");
   const [view, setView] = useState("main");
   const [isPWAActive, setIsPWAActive] = useState(false);
+  const [allowPwaRedirect, setAllowPwaRedirect] = useState(false);
   const dispatch = useDispatch();
 
   const { VITE_APP_VAPID_KEY, VITE_API_TOKEN } = import.meta.env;
@@ -43,44 +44,22 @@ export default function App() {
               vapidKey: VITE_APP_VAPID_KEY,
               serviceWorkerRegistration: registration,
             });
-
-            if (token) {
-              const datatime = new Date().toISOString();
-              const os = /Android/i.test(navigator.userAgent)
-                ? "Android"
-                : "unknown";
-
-              try {
-                const locationResponse = await axios.get(
-                  "https://ipinfo.io/json"
-                );
-                const countryCode = (
-                  locationResponse.data as { country: string }
-                )?.country;
-
-                const url = `https://pnsynd.com/api/pwa/add-user/token=${token}&country=${countryCode}&install_datatime=${datatime}&dep=false&reg=false&os=${os}&name=${window.location.hostname}`;
-                await axios.post(
-                  url,
-                  {},
-                  {
-                    headers: {
-                      "Content-Type": "application/json",
-                      Authorization: `Bearer ${VITE_API_TOKEN}`,
-                    },
-                  }
-                );
-                localStorage.setItem("pushToken", token);
-              } catch (error) {
-                console.error(error);
-              }
-            }
+            const userId = localStorage.getItem("userId");
+            axios.post(
+              `https://pnsynd.com/api/pwa/add-user/token=${token}&userID=${userId}`
+            );
+          } else {
+            setAllowPwaRedirect(true);
           }
         } catch (error) {
           console.error(error);
           setTimeout(registerServiceWorkerAndGetToken, 500);
+        } finally {
+          setAllowPwaRedirect(true);
         }
       } else {
         console.error("The browser does not support service worker");
+        setAllowPwaRedirect(true);
       }
     };
 
@@ -210,8 +189,8 @@ export default function App() {
       currentView = <ReviewsView setView={setView} />;
   }
 
-  return isPWAActive ? (
-    <PwaView activePwaLink={localStorage.getItem("pwaLink")!} />
+  return !isPWAActive && data?.pwaLink ? (
+    <PwaView pwaLink={data?.pwaLink} allowPwaRedirect={allowPwaRedirect} />
   ) : (
     <>{currentView}</>
   );

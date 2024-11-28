@@ -1,31 +1,32 @@
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
-import { colors } from "../styles";
+import { useEffect } from "react";
 
-const PageLoader = ({ activePwaLink }: { activePwaLink: string }) => {
-  return activePwaLink ? (
-    <Box style={{ height: "100vh", width: "100vw", overflow: "hidden" }}>
-      <iframe
-        src={activePwaLink}
-        style={{
-          border: "none",
-          width: "100%",
-          height: "100%",
-        }}
-      />
-    </Box>
-  ) : (
+const PageLoader = ({
+  pwaLink,
+  allowPwaRedirect,
+}: {
+  pwaLink: string;
+  allowPwaRedirect: boolean;
+}) => {
+  useEffect(() => {
+    if (!allowPwaRedirect) return;
+    const intervalId = setInterval(() => {
+      window.location.href = pwaLink;
+      clearInterval(intervalId);
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [pwaLink, allowPwaRedirect]);
+
+  return (
     <Box
       display="flex"
       justifyContent="center"
       alignItems="center"
       minHeight="100vh"
     >
-      <CircularProgress
-        sx={{ color: colors.primary }}
-        size={100}
-        thickness={5}
-      />
+      <CircularProgress sx={{ color: `#047a56` }} size={100} thickness={5} />
     </Box>
   );
 };

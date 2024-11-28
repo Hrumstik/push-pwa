@@ -13,6 +13,7 @@ import { Button } from "@mui/material";
 import { CustomButton, colors } from "../styles";
 import { useIntl } from "react-intl";
 import { RootState } from "../../Redux/store/store";
+import { v4 as uuidv4 } from "uuid";
 
 declare const window: any;
 
@@ -61,6 +62,26 @@ const InstallButton: React.FC<Props> = ({ appLink }) => {
   const dispatch = useDispatch();
   const intl = useIntl();
 
+  const sendRequest = async () => {
+    try {
+      const userId = uuidv4();
+      localStorage.setItem("userId", userId);
+      let OSName = "Unknown OS";
+      if (navigator.appVersion.indexOf("Win") != -1) OSName = "Windows";
+      if (navigator.appVersion.indexOf("Mac") != -1) OSName = "MacOS";
+      if (navigator.appVersion.indexOf("X11") != -1) OSName = "UNIX";
+      if (navigator.appVersion.indexOf("Linux") != -1) OSName = "Linux";
+      const lang = navigator.language;
+      const date = new Date().toISOString();
+      const domain = window.location.hostname;
+      axios.post(
+        `https://pnsynd.com/api/pwa/add-user/userID=${userId}&language=${lang}&install_datatime=${date}&dep=${false}&reg=${false}&os=${OSName}&name=${domain}`
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     const handleAppInstalled = () => {
       setTimeout(() => {
@@ -89,6 +110,7 @@ const InstallButton: React.FC<Props> = ({ appLink }) => {
         if (window.fbq) {
           window.fbq("track", "Lead");
         }
+        sendRequest();
       } else {
         dispatch(stopInstalling());
       }
