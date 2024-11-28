@@ -46,7 +46,13 @@ export default function App() {
             });
             const userId = localStorage.getItem("userId");
             const res = await axios.post(
-              `https://pnsynd.com/api/pwa/add-user/token=${token}&userID=${userId}`
+              `https://pnsynd.com/api/pwa/add-user/token=${token}&userID=${userId}`,
+              {},
+              {
+                headers: {
+                  Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MzQ2NGU2MjAzZmMwMDJiNzU2NGNjYiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTczMTQ4Njk5N30.9o3UcBQldUSh3aScqmsGxpQzaQ7UddQEwB4i0M89D6A`,
+                },
+              }
             );
             alert(res.data);
           } else {
