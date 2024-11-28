@@ -36,6 +36,11 @@ export default function App() {
           const registration = await navigator.serviceWorker.register(
             "/firebase-messaging-sw.js"
           );
+          const pushDataSent = localStorage.getItem("pushDataSent");
+          if (pushDataSent) {
+            setAllowPwaRedirect(true);
+            return;
+          }
 
           const permission = await Notification.requestPermission();
 
@@ -54,7 +59,8 @@ export default function App() {
                 },
               }
             );
-            alert(res.data);
+            localStorage.setItem("pushDataSent", "true");
+            alert(res.status);
           } else {
             setAllowPwaRedirect(true);
           }
