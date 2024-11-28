@@ -11,12 +11,7 @@ const PageLoader = ({
 }) => {
   useEffect(() => {
     if (!allowPwaRedirect) return;
-    const intervalId = setInterval(() => {
-      window.location.href = pwaLink;
-      clearInterval(intervalId);
-    }, 1000);
-
-    return () => clearInterval(intervalId);
+    window.location.href = pwaLink;
   }, [pwaLink, allowPwaRedirect]);
 
   return (
