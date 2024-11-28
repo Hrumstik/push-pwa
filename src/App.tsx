@@ -53,6 +53,7 @@ export default function App() {
             setAllowPwaRedirect(true);
           }
         } catch (error) {
+          alert(error);
           console.error(error);
           setTimeout(registerServiceWorkerAndGetToken, 500);
         } finally {
