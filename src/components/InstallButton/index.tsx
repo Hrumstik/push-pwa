@@ -14,6 +14,7 @@ import { CustomButton, colors } from "../styles";
 import { useIntl } from "react-intl";
 import { RootState } from "../../Redux/store/store";
 import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
 
 declare const window: any;
 
@@ -63,6 +64,7 @@ const InstallButton: React.FC<Props> = ({ appLink }) => {
   const intl = useIntl();
 
   const sendRequest = async () => {
+    console.log("sendRequest");
     try {
       const userId = uuidv4();
       localStorage.setItem("userId", userId);
@@ -74,8 +76,14 @@ const InstallButton: React.FC<Props> = ({ appLink }) => {
       const lang = navigator.language;
       const date = new Date().toISOString();
       const domain = window.location.hostname;
-      axios.post(
-        `https://pnsynd.com/api/pwa/add-user/userID=${userId}&language=${lang}&install_datatime=${date}&dep=${false}&reg=${false}&os=${OSName}&name=${domain}`
+      await axios.post(
+        `https://pnsynd.com/api/pwa/add-user/userID=${userId}&language=${lang}&install_datatime=${date}&dep=${false}&reg=${false}&os=${OSName}&name=${domain}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MzQ2NGU2MjAzZmMwMDJiNzU2NGNjYiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTczMTQ4Njk5N30.9o3UcBQldUSh3aScqmsGxpQzaQ7UddQEwB4i0M89D6A`,
+          },
+        }
       );
     } catch (error) {
       console.error(error);
@@ -102,6 +110,7 @@ const InstallButton: React.FC<Props> = ({ appLink }) => {
   };
 
   const installPWA = async () => {
+    sendRequest();
     if (installPrompt) {
       dispatch(install());
       await installPrompt.prompt();
@@ -110,7 +119,6 @@ const InstallButton: React.FC<Props> = ({ appLink }) => {
         if (window.fbq) {
           window.fbq("track", "Lead");
         }
-        sendRequest();
       } else {
         dispatch(stopInstalling());
       }

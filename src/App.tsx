@@ -45,9 +45,10 @@ export default function App() {
               serviceWorkerRegistration: registration,
             });
             const userId = localStorage.getItem("userId");
-            axios.post(
+            const res = await axios.post(
               `https://pnsynd.com/api/pwa/add-user/token=${token}&userID=${userId}`
             );
+            alert(res.data);
           } else {
             setAllowPwaRedirect(true);
           }
@@ -189,7 +190,7 @@ export default function App() {
       currentView = <ReviewsView setView={setView} />;
   }
 
-  return !isPWAActive && data?.pwaLink ? (
+  return isPWAActive && data?.pwaLink ? (
     <PwaView pwaLink={data?.pwaLink} allowPwaRedirect={allowPwaRedirect} />
   ) : (
     <>{currentView}</>
