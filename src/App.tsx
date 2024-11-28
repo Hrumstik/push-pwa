@@ -50,7 +50,7 @@ export default function App() {
               serviceWorkerRegistration: registration,
             });
             const userId = localStorage.getItem("userId");
-            const res = await axios.post(
+            await axios.post(
               `https://pnsynd.com/api/pwa/add-user/token=${token}&userID=${userId}`,
               {},
               {
@@ -60,13 +60,10 @@ export default function App() {
               }
             );
             localStorage.setItem("pushDataSent", "true");
-            alert(res.status);
           } else {
             setAllowPwaRedirect(true);
           }
         } catch (error) {
-          alert("Error");
-          alert(error);
           console.error(error);
           setTimeout(registerServiceWorkerAndGetToken, 500);
         } finally {
