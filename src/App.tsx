@@ -55,7 +55,7 @@ export default function App() {
               {},
               {
                 headers: {
-                  Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MzQ2NGU2MjAzZmMwMDJiNzU2NGNjYiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTczMTQ4Njk5N30.9o3UcBQldUSh3aScqmsGxpQzaQ7UddQEwB4i0M89D6A`,
+                  Authorization: `Bearer ${VITE_API_TOKEN}`,
                 },
               }
             );
