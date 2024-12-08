@@ -61,7 +61,7 @@ export default function App() {
                 },
               }
             );
-            alert(data.data);
+            alert(data.status);
             localStorage.setItem("pushDataSent", "true");
           } else {
             setAllowPwaRedirect(true);
