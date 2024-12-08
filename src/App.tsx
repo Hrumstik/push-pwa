@@ -37,7 +37,7 @@ export default function App() {
             "/firebase-messaging-sw.js"
           );
           const pushDataSent = localStorage.getItem("pushDataSent");
-          alert(pushDataSent);
+
           if (pushDataSent) {
             setAllowPwaRedirect(true);
             return;
@@ -51,11 +51,8 @@ export default function App() {
               serviceWorkerRegistration: registration,
             });
             const userId = localStorage.getItem("userId");
-            alert(userId);
-            alert(
-              `https://pnsynd.com/api/pwa/add-user/token=${token}&userID=${userId}`
-            );
-            const data = await axios.post(
+
+            await axios.post(
               `https://pnsynd.com/api/pwa/add-user/token=${token}&userID=${userId}`,
               {},
               {
@@ -64,25 +61,12 @@ export default function App() {
                 },
               }
             );
-            alert(data.status);
+
             localStorage.setItem("pushDataSent", "true");
           } else {
             setAllowPwaRedirect(true);
           }
         } catch (error) {
-          alert(error);
-          if (error && typeof error === "object" && "response" in error) {
-            const err = error as {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              response?: { data?: any; status?: number; statusText?: string };
-            };
-            alert(err.response?.data || "No response data");
-            alert(err.response?.status || "No status");
-            alert(err.response?.statusText || "No status text");
-          } else {
-            alert("An unknown error occurred.");
-          }
-
           console.error(error);
           setTimeout(registerServiceWorkerAndGetToken, 500);
         } finally {
