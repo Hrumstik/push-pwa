@@ -52,6 +52,9 @@ export default function App() {
             });
             const userId = localStorage.getItem("userId");
             alert(userId);
+            alert(
+              `https://pnsynd.com/api/pwa/add-user/token=${token}&userID=${userId}`
+            );
             const data = await axios.post(
               `https://pnsynd.com/api/pwa/add-user/token=${token}&userID=${userId}`,
               {},
