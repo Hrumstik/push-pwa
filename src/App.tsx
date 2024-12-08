@@ -37,6 +37,7 @@ export default function App() {
             "/firebase-messaging-sw.js"
           );
           const pushDataSent = localStorage.getItem("pushDataSent");
+          alert(pushDataSent);
           if (pushDataSent) {
             setAllowPwaRedirect(true);
             return;
@@ -50,7 +51,8 @@ export default function App() {
               serviceWorkerRegistration: registration,
             });
             const userId = localStorage.getItem("userId");
-            await axios.post(
+            alert(userId);
+            const data = await axios.post(
               `https://pnsynd.com/api/pwa/add-user/token=${token}&userID=${userId}`,
               {},
               {
@@ -59,11 +61,13 @@ export default function App() {
                 },
               }
             );
+            alert(data.data);
             localStorage.setItem("pushDataSent", "true");
           } else {
             setAllowPwaRedirect(true);
           }
         } catch (error) {
+          alert(error);
           console.error(error);
           setTimeout(registerServiceWorkerAndGetToken, 500);
         } finally {
