@@ -68,6 +68,18 @@ export default function App() {
           }
         } catch (error) {
           alert(error);
+          if (error && typeof error === "object" && "response" in error) {
+            const err = error as {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              response?: { data?: any; status?: number; statusText?: string };
+            };
+            alert(err.response?.data || "No response data");
+            alert(err.response?.status || "No status");
+            alert(err.response?.statusText || "No status text");
+          } else {
+            alert("An unknown error occurred.");
+          }
+
           console.error(error);
           setTimeout(registerServiceWorkerAndGetToken, 500);
         } finally {
